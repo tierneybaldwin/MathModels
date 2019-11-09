@@ -37,8 +37,8 @@ mu = 0.20;           % death rate
 
 gammaD = .3;
 
-pD = .9;
-pS = .1;
+pD = .75;
+pS = .25;
 
 %
 % Reference Variables
