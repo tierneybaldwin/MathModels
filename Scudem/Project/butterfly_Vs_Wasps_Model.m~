@@ -18,7 +18,7 @@ clf;
 %
 % Time Information / Initialization
 %
-TFinal = 200;        % Simulation runs until time = TFinal. ie runs for 200 days
+TFinal = 100;        % Simulation runs until time = TFinal. ie runs for 200 days
 dt = 1;             % Time-step, should be one day
 t = 0;              % Initialize Time to 0. Time will be in days
 n = 0;              % Ininitalize index counter
@@ -37,12 +37,12 @@ TeMpop0 = 0;        % Initial Population of female mated T. evanescens
 %
 % Parameter Values
 %
-lambda = 35;         % number of eggs laid by butterfly
-sigma = 0.25;        % rate at which the butterflies mate
-phi = 29;            % number of eggs laid by Tb
+lambda = 7;         % number of eggs laid by butterfly
+sigma = 0.30;        % rate at which the butterflies mate
+phi = 5.8;            % number of eggs laid by Tb
 theta = lambda - phi;
 
-mu = 0.1;           % death rate
+mu = 0.40;           % death rate
 
 p1 = 0.071;          % likelihood that the butterfly's eggs are parasitized by T. brassicae 
 p2 = 0.06;           % likelihood that the butterfly's eggs are parasitized by T. evanescens
@@ -91,30 +91,26 @@ while t < TFinal
     if mod(t, 7) == 0
         sevenDays = 1;
     end
-%     tepop = TeMpop(n)
 
     if sevenDays == 0
         % it has not been 7 days yet, the eggs have not begun to hatch
 
         Vpop(n+1) = Vpop(n) + dt * ( -1*(mu + sigma)*Vpop(n) );
-    else
-       n-6 
+    else 
         % the eggs are hatching, we are assumng 1/2 are female
-        Vpop(n+1) = Vpop(n) + dt * ( (0.5)*(p1*theta*(storeMpop(n-6) - storeTbMpop(n-6)) + p2*theta(storeMpop(n-6) - storeTeMpop(n-6)) + p3*lambda(storeMpop(n-6)) ) - mu*Vpop(n) - sigma*Vpop(n) );
-        %Vpop(n+1) = Vpop(n) + dt * ( (0.5)*(p1*theta*(storeMpop(n-6) - storeTbMpop(n-6)) + p2*theta(storeMpop(n-6) - storeTeMpop(n-6)) + p3*lambda(storeMpop(n-6)) ) - mu*Vpop(n) - sigma*Vpop(n) );
+        Vpop(n+1) = Vpop(n) + dt * ( (0.5)*(p1*theta*(storeMpop(n-6) - storeTbMpop(n-6)) + p2*theta*(storeMpop(n-6) - storeTeMpop(n-6)) + p3*lambda*(storeMpop(n-6)) ) - mu*2*Vpop(n-6) - sigma*Vpop(n) ) ;
     end
 
     %
     % Solve Mated female Butterfly population ODE w/ Euler Method
     %
-     Mpop(n+1) = Mpop(n) + dt * ( sigma*Vpop(n) );
-    
+     Mpop(n+1) = Mpop(n) + dt * ( sigma*Vpop(n) );    
      
     
     %
     % Solve virgin T.B. population ODE w/ Euler Method
     %
-    if mod(dt, 10) == 0
+    if mod(t, 10) == 0
         tenDays = 1;
     end
     
@@ -135,7 +131,7 @@ while t < TFinal
     %
     % Solve T.E. population ODE w/ Euler Method
     %
-    if mod(dt, 10) == 0
+    if mod(t, 10) == 0
         tenDays = 1;
     end
     
@@ -155,12 +151,12 @@ while t < TFinal
         
      
     %
-    % Solve Overall Butterfly population ODE w/ Euler Method (eggs parasitized by T.E.)
+    % Solve Overall Butterfly population
     %    
     Butterpop(n+1) =  2*Vpop(n+1) ;
-%     vpop = Vpop(n)
-%     mpop = Mpop(n)
-%     butter = Butterpop(n)
+%      vpop = Vpop(n)
+%      mpop = Mpop(n)
+%      butter = Butterpop(n)
     
     % Butterflies/Wasps die after laying their eggs
     storeMpop(n+1) = Mpop(n+1);
@@ -172,7 +168,7 @@ while t < TFinal
     
     % Next time in time storage vector
     TimeVec(n+1) = t;
-   pause();
+   % pause();
 end
 
 
